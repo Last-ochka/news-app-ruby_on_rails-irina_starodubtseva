@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::API
-#   include JsonWebToken
+  #   include JsonWebToken
 
-   before_action :authenticate_request
+  before_action :authenticate_request
 
-#   private
+  #   private
 
-#   def authenticate_request
-#     header = request.headers['Authorization']
-#     header = header.split(' ').last if header
-#     decoded = decode(header)
-#      @current_user = User.find(decoded[:user_id])
-#   end
-# end
+  #   def authenticate_request
+  #     header = request.headers['Authorization']
+  #     header = header.split(' ').last if header
+  #     decoded = decode(header)
+  #      @current_user = User.find(decoded[:user_id])
+  #   end
+  # end
 
-# def not_found
-#     render json: { error: 'not_found' }
-# end
+  # def not_found
+  #     render json: { error: 'not_found' }
+  # end
 
   def authenticate_request
     header = request.headers['Authorization']
