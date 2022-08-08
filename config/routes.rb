@@ -1,9 +1,6 @@
 Rails.application.routes.draw do
-
-  root 'tasks#index'
-  resources :tasks 
-  get 'users', to: 'users#index'  # get 'users/new'
+  # root 'tasks#index' # #
+  resources :tasks
   resources :users
-  # get 'signup'  => 'users#new'
-
+  post '/auth/login', to: 'authentication#login'
 end
