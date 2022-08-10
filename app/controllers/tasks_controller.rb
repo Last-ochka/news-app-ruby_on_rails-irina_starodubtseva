@@ -1,13 +1,36 @@
 class TasksController < ApplicationController
+  skip_before_action :authenticate_request, only: %i[show index]
+
   def index
     # @tasks = Task.all.order(created_at: :desc)
     # render json: @tasks
-    @tasks = if @current_user
-               Task.where('user_id = ?', @current_user.id).or(Task.where('user_id IS ?', nil))
-             else
-               Task.where('user_id IS ?', nil)
-             end
-    pp @current_user 
+    #  if @current_user
+    #    Task.where('user_id = ?', @current_user.id)
+    #   #  .or(Task.where('user_id IS ?', nil))
+    #  else
+
+   ################# # @tasks = Task.where('user_id IS ?', nil)   !!!!
+   
+ ############ 
+ @tasks = Task.all[0..params[:page]] 
+ ##########       ?????????
+
+    #  end
+    pp @current_user
+    # "title = ?", params[:title]
+    render json: @tasks
+  end
+
+  def users_tasks
+    # @tasks = Task.all.order(created_at: :desc)
+    # render json: @tasks
+    #  if @current_user
+    @tasks = Task.where('user_id = ?', @current_user.id).or(Task.where('user_id IS ?', nil))
+    #   #  .
+    #  else
+    #    Task.where('user_id IS ?', nil)
+    #  end
+    pp @current_user
     # "title = ?", params[:title]
     render json: @tasks
   end
