@@ -1,8 +1,5 @@
 class TasksController < ApplicationController
 
-    # belongs_to :users
-
-
     def index
         @task = Task.new
         @tasks = Task.all.order(created_at: :desc)

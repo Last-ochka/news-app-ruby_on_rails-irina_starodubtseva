@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  # has_many :tasks
+ 
 
   before_action :set_user, only: [:show, :destroy]
   skip_before_action :authenticate_request, only: [:create, :index]
