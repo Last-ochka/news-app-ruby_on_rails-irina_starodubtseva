@@ -3,7 +3,7 @@
 class ApplicationController < ActionController::API
   #   include JsonWebToken
 
-  before_action :authenticate_request 
+   before_action :authenticate_request 
 
   #   private
 
@@ -18,6 +18,9 @@ class ApplicationController < ActionController::API
   # def not_found
   #     render json: { error: 'not_found' }
   # end
+def show
+render json: @current_user
+end
 
   def authenticate_request
     header = request.headers['Authorization']

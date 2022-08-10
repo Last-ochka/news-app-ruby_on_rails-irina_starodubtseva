@@ -1,7 +1,14 @@
 class TasksController < ApplicationController
   def index
-    @task = Task.new
-    @tasks = Task.all.order(created_at: :desc)
+    # @tasks = Task.all.order(created_at: :desc)
+    # render json: @tasks
+    @tasks = if @current_user
+               Task.where('user_id = ?', @current_user.id).or(Task.where('user_id IS ?', nil))
+             else
+               Task.where('user_id IS ?', nil)
+             end
+    pp @current_user 
+    # "title = ?", params[:title]
     render json: @tasks
   end
 
