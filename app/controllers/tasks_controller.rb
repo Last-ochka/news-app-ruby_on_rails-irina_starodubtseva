@@ -62,7 +62,8 @@ class TasksController < ApplicationController
 
   def update
     @task = Task.find(params[:id])
-    @task.update(tasks_params)
+    @task.update(title: params[:title], text: params[:text], user: @current_user)
+    render json: @task
   end
 
   def all_length
