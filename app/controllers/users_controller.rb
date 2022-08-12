@@ -19,11 +19,20 @@ class UsersController < ApplicationController
     @user.login = params[:login]
     @user.password = params[:password]
     # @user.password_confirmation =  params[:password]
-    if @user.save
-      render json: @user, status: :created
-    else
-      render json: { errors: @user.errors.full_messages }
-    end
+    # if 
+      @user.save
+      if @user&.authenticate(params[:password])
+        token = JsonWebToken.encode(user_id: @user.id)
+        render json: { token: token }, status: :ok
+      else
+        render json: { error: 'unauthorized' }, status: :unauthorized
+      end
+
+
+    #   render json: @user, status: :created
+    # else
+    #   render json: { errors: @user.errors.full_messages }
+    # end
   end
 
   def show
@@ -34,7 +43,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find(params[:id])
     @user.destroy
-    render json: 'ok'
+    render json:  @user
     #  render :json, status: :ok
   end
 

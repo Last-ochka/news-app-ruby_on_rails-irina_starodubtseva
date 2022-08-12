@@ -1,23 +1,10 @@
 class TasksController < ApplicationController
-  skip_before_action :authenticate_request, only: %i[show index]
+  skip_before_action :authenticate_request, only: %i[show index tasks_length]
 
   def index
-    # @tasks = Task.all.order(created_at: :desc)
-    # render json: @tasks
-    #  if @current_user
-    #    Task.where('user_id = ?', @current_user.id)
-    #   #  .or(Task.where('user_id IS ?', nil))
-    #  else
-
-   ################# # @tasks = Task.where('user_id IS ?', nil)   !!!!
-   
- ############ 
- @tasks = Task.all[0..params[:page]] 
- ##########       ?????????
-
-    #  end
+    a = params[:page].to_i
+    @tasks = Task.where('user_id IS ?', nil)[(a - 1) * 6...a * 6]
     pp @current_user
-    # "title = ?", params[:title]
     render json: @tasks
   end
 
@@ -25,13 +12,19 @@ class TasksController < ApplicationController
     # @tasks = Task.all.order(created_at: :desc)
     # render json: @tasks
     #  if @current_user
-    @tasks = Task.where('user_id = ?', @current_user.id).or(Task.where('user_id IS ?', nil))
-    #   #  .
-    #  else
-    #    Task.where('user_id IS ?', nil)
-    #  end
+    a = params[:page].to_i
+    @tasks = Task.where('user_id = ?', @current_user.id).or(Task.where('user_id IS ?', nil))[(a - 1) * 6...a * 6]
     pp @current_user
-    # "title = ?", params[:title]
+    render json: @tasks
+  end
+
+  def users_tasks_only
+    # @tasks = Task.all.order(created_at: :desc)
+    # render json: @tasks
+    #  if @current_user
+    a = params[:page].to_i
+    @tasks = Task.where('user_id = ?', @current_user.id)[(a - 1) * 6...a * 6]
+    pp @current_user
     render json: @tasks
   end
 
@@ -62,12 +55,29 @@ class TasksController < ApplicationController
   def destroy
     @task = Task.find(params[:id])
     @task.destroy
-    render :json, status: :ok
+    # render :json, status: :ok
+    render json: @task
+
   end
 
   def update
     @task = Task.find(params[:id])
     @task.update(tasks_params)
+  end
+
+  def all_length
+    count = Task.where('user_id = ?', @current_user.id).or(Task.where('user_id IS ?', nil))
+    render json: count.length
+  end
+
+  def tasks_length
+    count = Task.where('user_id IS ?', nil)
+    render json: count.length
+  end
+
+  def my_length
+    count = Task.where('user_id = ?', @current_user.id)
+    render json: count.length
   end
 
   private
