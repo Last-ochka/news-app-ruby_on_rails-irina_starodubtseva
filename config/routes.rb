@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get '/tasks/length', to: 'tasks#tasks_length'
   get '/my/page/:page', to: 'tasks#users_tasks_only'
   get '/my/length', to: 'tasks#my_length'
+  post '/new', to: 'tasks#create_globally'
+
 
   resources :tasks
   resources :users
