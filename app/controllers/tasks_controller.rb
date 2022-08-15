@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  skip_before_action :authenticate_request, only: %i[show index tasks_length]
+  skip_before_action :authenticate_request, only: %i[show index all_length all_tasks]
 
   def index
     a = params[:page].to_i
@@ -9,62 +9,29 @@ class TasksController < ApplicationController
     render json: @tasks
   end
 
-  def users_tasks
-    # @tasks = Task.all.order(created_at: :desc)
-    # render json: @tasks
-    #  if @current_user
+  def all_tasks
     a = params[:page].to_i
-    @tasks = Task.where('user_id = ?',
-                        @current_user.id).or(Task.where('user_id IS ?',
-                                                        nil)).or(Task.where('user_id = ?',
-                                                                            30)).order(created_at: :desc)[(a - 1) * 6...a * 6]
+    @tasks = Task.order(created_at: :desc)[(a - 1) * 6...a * 6]
     pp @current_user
     render json: @tasks
   end
 
   def users_tasks_only
-    # @tasks = Task.all.order(created_at: :desc)
-    # render json: @tasks
-    #  if @current_user
     a = params[:page].to_i
     @tasks = Task.where('user_id = ?', @current_user.id).order(created_at: :desc)[(a - 1) * 6...a * 6]
     pp @current_user
     render json: @tasks
   end
 
-  # def create
-  #    @task = Task.new(tasks_params)
-  # @task.save
-  # end
 
   def create
     task = Task.create(title: params[:title], text: params[:text], user: @current_user)
-    # @task = Task.new
-    # @task.title = params[:title]
-    # @task.text = params[:text]
-    # @task.user = @current_user
-    # pp @task
     if task.id.nil?
       render json: { errors: task.errors.full_messages }
     else
       render json: task, status: :created
     end
   end
-
-  def create_globally
-    task = Task.create(title: params[:title], text: params[:text], user: User.find(30))
-    # @task = Task.new
-    # @task.title = params[:title]
-    # @task.text = params[:text]
-    # @task.user = @current_user
-    # pp @task
-    if task.id.nil?
-      render json: { errors: task.errors.full_messages }
-    else
-      render json: task, status: :created
-    end
-  end
-
 
   def show
     @task = Task.find(params[:id])
@@ -85,16 +52,14 @@ class TasksController < ApplicationController
   end
 
   def all_length
-    count = Task.where('user_id = ?', @current_user.id).or(Task.where('user_id IS ?', nil)).or(Task.where('user_id = ?',
-    30))
+    count = Task.all
     render json: count.length
   end
 
-  def tasks_length
-    count = Task.where('user_id IS ?', nil).or(Task.where('user_id = ?',
-    30))
-    render json: count.length
-  end
+  # def tasks_length
+  #   count = Task.all
+  #   render json: count.length
+  # end
 
   def my_length
     count = Task.where('user_id = ?', @current_user.id)
